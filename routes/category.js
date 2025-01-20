@@ -40,7 +40,7 @@ router.get('/get', (req, res) => {
             res.status(200).json(results);
         }
     });
-});
+});//測試完成
 
 router.patch('/modify', (req, res) => {//更新商品
     const { categoryId, categoryName, picture, cost, price, discount, type } = req.body;

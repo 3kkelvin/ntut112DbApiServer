@@ -100,8 +100,8 @@ router.get('/get', (req, res) => {//查詢訂單細項
     let { startDate, endDate, salesEmpId, sortBy } = req.query;//時間、店員ID、排序條件 
     startDate = startDate || '1970-01-01';//預設全時段
     let defaultEndDate = new Date();
-    defaultEndDate.setDate(defaultEndDate.getDate() + 1);
-    endDate = endDate || defaultEndDate.toISOString().slice(0, 10); //到現在+1天
+    defaultEndDate.setDate(defaultEndDate.getDate() + 2);
+    endDate = endDate || defaultEndDate.toISOString().slice(0, 10); //到現在+2天
     sortBy = sortBy === '1' ? 'totalPrice' : 'saleDate'; // '0' 預設時間排序，'1' 按 totalPrice 排序
     let query = `
         SELECT * FROM \`order\`
@@ -122,13 +122,33 @@ router.get('/get', (req, res) => {//查詢訂單細項
     });
 });//測試完成
 
+router.get('/category/get/:orderId', (req, res) => {
+    const orderId = req.params.orderId;
+
+    let query = `
+        SELECT gc.categoryName, COUNT(g.goodId) AS count
+        FROM goods g
+        JOIN goodCategory gc ON g.goodCategory = gc.categoryId
+        WHERE g.orderId = ?
+        GROUP BY gc.categoryName
+    `;
+
+    pool.query(query, [orderId], (error, results) => {
+        if (error) {
+            res.status(500).send('Server Error');
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});//測試完成
+
 router.get('/total/get', (req, res) => {//統計資料查詢
     let { startDate, endDate } = req.query;
     //預設全時段
     startDate = startDate || '1970-01-01';
     let defaultEndDate = new Date();
-    defaultEndDate.setDate(defaultEndDate.getDate() + 1);
-    endDate = endDate || defaultEndDate.toISOString().slice(0, 10); //到現在+1天
+    defaultEndDate.setDate(defaultEndDate.getDate() + 2);
+    endDate = endDate || defaultEndDate.toISOString().slice(0, 10); //到現在+2天
     const query = `
         SELECT
             COUNT(orderId) AS totalOrders,

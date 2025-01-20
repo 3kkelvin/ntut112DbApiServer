@@ -127,8 +127,8 @@ router.get('/expired/get', (req, res) => {//浪費資料統計
     //讀取查詢範圍
     startDate = startDate || '1970-01-01';//預設全時段
     let defaultEndDate = new Date();
-    defaultEndDate.setDate(defaultEndDate.getDate() + 1);
-    endDate = endDate || defaultEndDate.toISOString().slice(0, 10); //到現在+1天
+    defaultEndDate.setDate(defaultEndDate.getDate() + 2);
+    endDate = endDate || defaultEndDate.toISOString().slice(0, 10); //到現在+2天
     const query = `
         SELECT COUNT(g.goodId) AS totalCount, SUM(gc.cost) AS totalCost
         FROM goods g

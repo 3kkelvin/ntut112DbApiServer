@@ -29,7 +29,10 @@ router.get('/get', (req, res) => {//取得員工資料
     // 如果沒有提供範圍或排序條件，用預設值
     range = range || 'all';
     sort = sort || 'isManager DESC, onBoardDate DESC';
-    let query = 'SELECT empId, name, isManager, workingHours, photo, onBoardDate FROM employee';
+    let query = `
+    SELECT empId, name, isManager, workingHours, photo, onBoardDate 
+    FROM employee 
+    WHERE empId != 'guest'`;
     // 根據範圍添加 WHERE 子句（這裡假設 range 是某種可用於過濾的值）
     if (range !== 'all') {
         query += ` WHERE ...`; // 根據具體情況添加適當的 WHERE 條件
@@ -181,8 +184,8 @@ router.get('/order/get', (req, res) => {//員工銷量
 
     startDate = startDate || '1970-01-01';//預設全時段
     let defaultEndDate = new Date();
-    defaultEndDate.setDate(defaultEndDate.getDate() + 1);
-    endDate = endDate || defaultEndDate.toISOString().slice(0, 10); //到現在+1天
+    defaultEndDate.setDate(defaultEndDate.getDate() + 2);
+    endDate = endDate || defaultEndDate.toISOString().slice(0, 10); //到現在+2天
 
     let query = `
         SELECT e.empId, e.name, e.photo, COUNT(o.orderId) AS orderCount, SUM(o.totalPrice) AS totalSales
